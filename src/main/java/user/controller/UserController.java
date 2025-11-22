@@ -1,6 +1,7 @@
 package user.controller;
 
 import user.model.User;
+import user.model.Role;
 import user.repository.UserRepository;
 import user.service.UserService;
 
@@ -30,7 +31,10 @@ public class UserController {
             return ResponseEntity.badRequest().body("Erreur: L'email existe déjà");
         }
         
-   
+        // Vérifier que le téléphone est fourni
+        if (user.getTelephone() == null || user.getTelephone().isEmpty()) {
+            return ResponseEntity.badRequest().body("Erreur: Le numéro de téléphone est obligatoire");
+        }
         
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
@@ -104,6 +108,50 @@ public class UserController {
     @GetMapping("/search/prenom")
     public List<User> getUsersByPrenom(@RequestParam String prenom) {
         return userService.getUsersByPrenom(prenom);
+    }
+    
+    // NOUVEAUX ENDPOINTS POUR LES ROLES
+    @GetMapping("/role/{role}")
+    public ResponseEntity<?> getUsersByRole(@PathVariable String role) {
+        try {
+            Role roleEnum = Role.valueOf(role.toUpperCase());
+            List<User> users = userService.getUsersByRole(roleEnum);
+            return ResponseEntity.ok(users);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Rôle invalide: " + role + "\"}");
+        }
+    }
+    
+    @GetMapping("/users")
+    public List<User> getUsers() {
+        return userService.getUsers();
+    }
+    
+    @GetMapping("/coachs")
+    public List<User> getCoachs() {
+        return userService.getCoachs();
+    }
+    
+    @GetMapping("/search/role/{role}/nom")
+    public ResponseEntity<?> searchUsersByRoleAndNom(@PathVariable String role, @RequestParam String nom) {
+        try {
+            Role roleEnum = Role.valueOf(role.toUpperCase());
+            List<User> users = userService.searchUsersByRoleAndNom(roleEnum, nom);
+            return ResponseEntity.ok(users);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Rôle invalide: " + role + "\"}");
+        }
+    }
+    
+    @GetMapping("/search/role/{role}/prenom")
+    public ResponseEntity<?> searchUsersByRoleAndPrenom(@PathVariable String role, @RequestParam String prenom) {
+        try {
+            Role roleEnum = Role.valueOf(role.toUpperCase());
+            List<User> users = userService.searchUsersByRoleAndPrenom(roleEnum, prenom);
+            return ResponseEntity.ok(users);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Rôle invalide: " + role + "\"}");
+        }
     }
     
     @PutMapping("/{id}")

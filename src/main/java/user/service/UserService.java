@@ -1,6 +1,7 @@
 package user.service;
 
 import user.model.User;
+import user.model.Role;
 import user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
     
-    public boolean telExists(String tel) {
-        return userRepository.findByTel(tel).isPresent();
+    public boolean telephoneExists(String telephone) { // Changé ici
+        return userRepository.findByTelephone(telephone).isPresent(); // Changé ici
     }
     
     public User saveUser(User user) {
@@ -52,15 +53,18 @@ public class UserService {
                 }
                 user.setEmail(userDetails.getEmail());
             }
-            if (userDetails.getTel() != null) {
-                if (!user.getTel().equals(userDetails.getTel()) && 
-                    userRepository.findByTel(userDetails.getTel()).isPresent()) {
+            if (userDetails.getTelephone() != null) { // Changé ici
+                if (!user.getTelephone().equals(userDetails.getTelephone()) && 
+                    userRepository.findByTelephone(userDetails.getTelephone()).isPresent()) { // Changé ici
                     throw new RuntimeException("Le numéro de téléphone existe déjà");
                 }
-                user.setTel(userDetails.getTel());
+                user.setTelephone(userDetails.getTelephone()); // Changé ici
             }
             if (userDetails.getPsw() != null) {
                 user.setPsw(userDetails.getPsw());
+            }
+            if (userDetails.getRole() != null) {
+                user.setRole(userDetails.getRole());
             }
             
             return userRepository.save(user);
@@ -82,5 +86,26 @@ public class UserService {
     
     public List<User> getUsersByPrenom(String prenom) {
         return userRepository.findByPrenom(prenom);
+    }
+    
+    // Nouvelles méthodes pour les rôles
+    public List<User> getUsersByRole(Role role) {
+        return userRepository.findByRole(role);
+    }
+    
+    public List<User> getUsers() {
+        return userRepository.findByRole(Role.USER);
+    }
+    
+    public List<User> getCoachs() {
+        return userRepository.findByRole(Role.COACH);
+    }
+    
+    public List<User> searchUsersByRoleAndNom(Role role, String nom) {
+        return userRepository.findByRoleAndNomContaining(role, nom);
+    }
+    
+    public List<User> searchUsersByRoleAndPrenom(Role role, String prenom) {
+        return userRepository.findByRoleAndPrenomContaining(role, prenom);
     }
 }
