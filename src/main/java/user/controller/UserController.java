@@ -31,11 +31,6 @@ public class UserController {
             return ResponseEntity.badRequest().body("Erreur: L'email existe déjà");
         }
         
-        // Vérifier que le téléphone est fourni
-        if (user.getTelephone() == null || user.getTelephone().isEmpty()) {
-            return ResponseEntity.badRequest().body("Erreur: Le numéro de téléphone est obligatoire");
-        }
-        
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }

@@ -19,9 +19,7 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
     
-    public boolean telephoneExists(String telephone) { // Changé ici
-        return userRepository.findByTelephone(telephone).isPresent(); // Changé ici
-    }
+   
     
     public User saveUser(User user) {
         return userRepository.save(user);
@@ -53,7 +51,7 @@ public class UserService {
                 }
                 user.setEmail(userDetails.getEmail());
             }
-            if (userDetails.getTelephone() != null) { // Changé ici
+            if (userDetails.getTelephone() != null) {
                 if (!user.getTelephone().equals(userDetails.getTelephone()) && 
                     userRepository.findByTelephone(userDetails.getTelephone()).isPresent()) { // Changé ici
                     throw new RuntimeException("Le numéro de téléphone existe déjà");

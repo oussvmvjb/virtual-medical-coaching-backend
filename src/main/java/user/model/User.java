@@ -21,14 +21,13 @@ public class User {
     @Column(nullable = false)
     private String psw;
     
-    @Column(name = "telephone", nullable = false) // Correction ici
-    private String telephone; // Changé de "tel" à "telephone"
+    @Column(nullable = false) 
+    private String telephone;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
     
-    // Constructeurs
     public User() {
         this.role = Role.USER;
     }
@@ -41,8 +40,6 @@ public class User {
         this.telephone = telephone;
         this.role = role;
     }
-    
-    // Getters et Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -58,8 +55,8 @@ public class User {
     public String getPsw() { return psw; }
     public void setPsw(String psw) { this.psw = psw; }
     
-    public String getTelephone() { return telephone; } // Changé ici
-    public void setTelephone(String telephone) { this.telephone = telephone; } // Changé ici
+    public String getTelephone() { return telephone; } 
+    public void setTelephone(String telephone) { this.telephone = telephone; }
     
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
